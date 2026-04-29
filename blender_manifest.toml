@@ -8,7 +8,7 @@ maintainer = "Robert Kezives <kezives3D@gmail.com>"
 
 type = "add-on"
 
-website = "https://github.com/r-kez/k_tools_visibility_check/issues"
+website = "https://github.com/r-kez/k_tools_ghost_volume"
 
 tags = ["3D View"]
 

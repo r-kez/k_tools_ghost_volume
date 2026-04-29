@@ -18,14 +18,14 @@ class KVolumeAddonPreferences(bpy.types.AddonPreferences):
         # Left side: About/Support
         left = row.column()
         left.label(text="Support & Links:", icon='HELP')
-        left.operator("wm.url_open", text="Report an Issue", icon='URL').url = "https://github.com/yourusername/calculate-volume/issues"
-        left.operator("wm.url_open", text="Documentation", icon='HELP').url = "https://yourwebsite.com/docs"
+        left.operator("wm.url_open", text="Report an Issue", icon='URL').url = "https://github.com/r-kez/k_tools_ghost_volume/issues"
+        left.operator("wm.url_open", text="Repository / Docs", icon='HELP').url = "https://github.com/r-kez/k_tools_ghost_volume"
         
         # Right side: Creator/Branding
         right = row.column()
         right.label(text="Developed by:", icon='USER')
-        right.label(text="K-Tools / Jacques Lucke", icon='BLANK1')
-        right.operator("wm.url_open", text="Visit Website", icon='WORLD').url = "https://yourwebsite.com"
+        right.label(text="Robert Kezives", icon='BLANK1')
+        right.operator("wm.url_open", text="Creator Profile", icon='WORLD').url = "https://github.com/r-kez"
 
 def register():
     bpy.utils.register_class(KVolumeAddonPreferences)
