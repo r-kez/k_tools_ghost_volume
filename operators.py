@@ -1,4 +1,5 @@
 import bpy
+import math
 from .logic import calc_volume_logic
 
 # -------------------------------------------------------------------------
@@ -9,6 +10,11 @@ def volume_timer_callback():
     """Periodic callback to update volume"""
     context = bpy.context
     scene = context.scene
+    
+    # Safety check for scene.k_volume
+    if not hasattr(scene, "k_volume"):
+        return None
+        
     props = scene.k_volume
     
     # Check if we should stop the timer
@@ -60,11 +66,51 @@ class OBJECT_OT_CalculateVolumeML(bpy.types.Operator):
         self.report({'INFO'}, f"Volume: {vol_ml:,.2f} ml")
         return {'FINISHED'}
 
+class OBJECT_OT_ScaleToTargetVolume(bpy.types.Operator):
+    """Scale the object uniformly to match the Target Volume"""
+    bl_idname = "object.scale_to_target_volume"
+    bl_label = "Scale to Target"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.active_object
+        scene = context.scene
+        return obj and obj.type == 'MESH' and scene.k_volume.result > 0.001
+
+    def execute(self, context):
+        obj = context.active_object
+        scene = context.scene
+        props = scene.k_volume
+        
+        v_current = props.result
+        v_target = props.target_volume
+        
+        if v_current <= 0:
+            self.report({'ERROR'}, "Current volume is zero. Cannot scale.")
+            return {'CANCELLED'}
+            
+        # Calculate uniform scale factor
+        # Volume is proportional to scale^3
+        ratio = v_target / v_current
+        scale_factor = math.pow(ratio, 1/3)
+        
+        # Apply scaling
+        obj.scale *= scale_factor
+        
+        # Force a recalculation to confirm
+        props.result = calc_volume_logic(obj, scene)
+        
+        self.report({'INFO'}, f"Scaled by {scale_factor:.4f}x to reach {v_target}ml")
+        return {'FINISHED'}
+
 def register():
     bpy.utils.register_class(OBJECT_OT_CalculateVolumeML)
+    bpy.utils.register_class(OBJECT_OT_ScaleToTargetVolume)
 
 def unregister():
     bpy.utils.unregister_class(OBJECT_OT_CalculateVolumeML)
+    bpy.utils.unregister_class(OBJECT_OT_ScaleToTargetVolume)
     # Ensure timer is stopped
     if bpy.app.timers.is_registered(volume_timer_callback):
         bpy.app.timers.unregister(volume_timer_callback)

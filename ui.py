@@ -12,6 +12,12 @@ class VIEW3D_PT_CalculateVolume(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        
+        # Safety check: ensure properties are initialized
+        if not hasattr(scene, "k_volume") or not hasattr(scene.k_volume, "realtime"):
+            layout.label(text="Initializing Engine...", icon='WAIT')
+            return
+
         props = scene.k_volume
         obj = context.active_object
 
@@ -81,7 +87,20 @@ class VIEW3D_PT_CalculateVolume(bpy.types.Panel):
         if props.use_waterline:
             wat_box.prop(props, "waterline_z", text="Fill Height")
 
-        # 5. Utilities & Manual Override
+        # 5. Volume Matching (Scaling)
+        layout.separator(factor=1.0)
+        col = layout.column(align=True)
+        row = col.row()
+        row.label(text="VOLUME MATCHING", icon='FULLSCREEN_ENTER')
+        
+        match_box = col.box()
+        match_box.prop(props, "target_volume", text="Target (ml)")
+        
+        row = match_box.row(align=True)
+        row.scale_y = 1.2
+        row.operator("object.scale_to_target_volume", text="Scale to Target", icon='ARROW_LEFTRIGHT')
+
+        # 6. Utilities & Manual Override
         if not is_running:
             layout.separator(factor=1.5)
             layout.operator("object.calculate_volume_ml", text="Refresh Measurement", icon='FILE_REFRESH')

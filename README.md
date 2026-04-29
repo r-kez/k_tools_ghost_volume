@@ -10,6 +10,7 @@ A professional-grade Blender extension designed for high-precision physical prod
 - **Vertex Group Targeting**: Assign specific faces (the "Volume Source") to exclude handles or external parts from the measurement.
 - **Multiple Units**: Toggle between Milliliters (ml), Liters (L), Cubic Meters (m³), and Fluid Ounces (fl oz).
 - **GPU Viewport Overlay**: Professional data display that follows your object in 3D space.
+- **Volume Matching (Scaling)**: Automatically scale your object to match a specific target volume (ml) with a single click.
 
 ## 🛠 How to Use
 
@@ -31,6 +32,11 @@ A professional-grade Blender extension designed for high-precision physical prod
 1. Create a **Vertex Group** containing only the faces that define the volume.
 2. In the add-on panel, enable **Use Selection** and search for your Vertex Group.
 3. Only the volume contained by those specific faces will be calculated.
+
+### 5. Volume Matching (Auto-Scaling)
+1. In the **Volume Matching** section, enter your desired volume in the **Target (ml)** field.
+2. Click **Scale to Target**.
+3. The object will be scaled uniformly to match that exact volume.
 
 ## ⚙️ Technical Details
 

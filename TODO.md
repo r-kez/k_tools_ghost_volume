@@ -25,6 +25,7 @@
 - [x] Full Modular Refactor (logic, ui, ops, props, drawing).
 - [x] Implementation of Namespaced PropertyGroup.
 - [x] Addon Preferences with documentation links.
+- [x] **New Feature**: Volume Matching (Scale to Target).
 - [x] Final code cleanup and Documentation.
 
 **STATUS: 100% COMPLETE - PRODUCTION READY**

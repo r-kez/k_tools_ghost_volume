@@ -8,6 +8,14 @@ class KVolumeProperties(bpy.types.PropertyGroup):
         precision=2
     ) # type: ignore
     
+    target_volume: bpy.props.FloatProperty(
+        name="Target Volume",
+        description="Target volume to match when scaling (in ml)",
+        default=500.0,
+        min=0.001,
+        precision=2
+    ) # type: ignore
+    
     realtime: bpy.props.BoolProperty(
         name="Real-time Volume",
         description="Calculate volume automatically on changes",
