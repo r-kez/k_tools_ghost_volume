@@ -1,0 +1,19 @@
+schema_version = "1.0.0"
+
+id = "k_tools_calculate_volume"
+version = "1.0.0"
+name = "K-Tools: Ghost Volume"
+tagline = "High-precision physical volume prototyping with Ghost Proxy technology"
+maintainer = "Robert Kezives <kezives3D@gmail.com>"
+
+type = "add-on"
+
+website = "https://github.com/r-kez/k_tools_visibility_check/issues"
+
+tags = ["3D View"]
+
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:GPL-3.0-or-later",
+]
