@@ -94,7 +94,7 @@ class VIEW3D_PT_CalculateVolume(bpy.types.Panel):
         row.label(text="VOLUME MATCHING", icon='FULLSCREEN_ENTER')
         
         match_box = col.box()
-        match_box.prop(props, "target_volume", text="Target (ml)")
+        match_box.prop(props, "target_volume", text=f"Target ({label})")
         
         row = match_box.row(align=True)
         row.scale_y = 1.2

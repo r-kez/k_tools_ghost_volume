@@ -1,6 +1,6 @@
 import bpy
 import math
-from .logic import calc_volume_logic
+from .logic import calc_volume_logic, UNIT_DATA
 
 # -------------------------------------------------------------------------
 # Timer Callback & Management
@@ -67,7 +67,7 @@ class OBJECT_OT_CalculateVolumeML(bpy.types.Operator):
         return {'FINISHED'}
 
 class OBJECT_OT_ScaleToTargetVolume(bpy.types.Operator):
-    """Scale the object uniformly to match the Target Volume"""
+    """Scale the object uniformly to match the Target Volume in selected units"""
     bl_idname = "object.scale_to_target_volume"
     bl_label = "Scale to Target"
     bl_options = {'REGISTER', 'UNDO'}
@@ -83,25 +83,31 @@ class OBJECT_OT_ScaleToTargetVolume(bpy.types.Operator):
         scene = context.scene
         props = scene.k_volume
         
-        v_current = props.result
-        v_target = props.target_volume
+        v_current_ml = props.result
         
-        if v_current <= 0:
+        # Convert user-input target to ML for calculation
+        unit_key = props.unit
+        mult, label = UNIT_DATA.get(unit_key, (1.0, "ml"))
+        
+        # Target in ml = (User Value) / (Unit Multiplier)
+        # e.g. If User wants 1L, Target_ML = 1 / 0.001 = 1000ml. Correct.
+        v_target_ml = props.target_volume / mult
+        
+        if v_current_ml <= 0:
             self.report({'ERROR'}, "Current volume is zero. Cannot scale.")
             return {'CANCELLED'}
             
-        # Calculate uniform scale factor
-        # Volume is proportional to scale^3
-        ratio = v_target / v_current
+        # Calculate uniform scale factor based on ML volumes
+        ratio = v_target_ml / v_current_ml
         scale_factor = math.pow(ratio, 1/3)
         
         # Apply scaling
         obj.scale *= scale_factor
         
-        # Force a recalculation to confirm
+        # Recalculate to confirm
         props.result = calc_volume_logic(obj, scene)
         
-        self.report({'INFO'}, f"Scaled by {scale_factor:.4f}x to reach {v_target}ml")
+        self.report({'INFO'}, f"Scaled to {props.target_volume}{label} (Factor: {scale_factor:.4f}x)")
         return {'FINISHED'}
 
 def register():
