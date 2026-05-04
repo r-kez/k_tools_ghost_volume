@@ -39,9 +39,36 @@ class VIEW3D_PT_CalculateVolume(bpy.types.Panel):
 
         layout.separator(factor=1.5)
 
+        # Measurement Mode Selector
+        col = layout.column(align=True)
+        col.label(text="TARGET SELECTION", icon='IMAGE')
+        row = col.row(align=True)
+        row.prop(props, "measure_mode", expand=True)
+        
+        # Determine the effective object
+        if props.measure_mode == 'SPECIFIC':
+            sub = col.row()
+            sub.prop(props, "target_object", text="")
+            obj = props.target_object
+        else:
+            obj = context.active_object
+
         if not obj or obj.type != 'MESH':
             layout.label(text="Select a Mesh to begin", icon='INFO')
             return
+
+        # Modifier Warnings
+        active_mods = [mod for mod in obj.modifiers if mod.show_viewport]
+        has_subsurf = any(mod.type == 'SUBSURF' for mod in active_mods)
+        has_solidify = any(mod.type == 'SOLIDIFY' for mod in active_mods)
+        
+        if has_subsurf or has_solidify:
+            warn_box = layout.box()
+            if has_subsurf:
+                warn_box.label(text="Subsurf Active: May cause lag", icon='ERROR')
+            if has_solidify:
+                warn_box.label(text="Solidify Active: Volume is inaccurate", icon='ERROR')
+            layout.separator(factor=1.0)
 
         # 2. Hero Display Section
         box = layout.box()

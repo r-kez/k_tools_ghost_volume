@@ -21,7 +21,11 @@ def volume_timer_callback():
     if not props.realtime:
         return None
 
-    obj = context.active_object
+    if props.measure_mode == 'SPECIFIC':
+        obj = props.target_object
+    else:
+        obj = context.active_object
+        
     if obj and obj.type == 'MESH':
         # Perform calculation
         props.result = calc_volume_logic(obj, scene)
@@ -51,11 +55,15 @@ class OBJECT_OT_CalculateVolumeML(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object is not None and context.active_object.type == 'MESH'
+        if not hasattr(context.scene, "k_volume"): return False
+        props = context.scene.k_volume
+        obj = props.target_object if props.measure_mode == 'SPECIFIC' else context.active_object
+        return obj is not None and obj.type == 'MESH'
 
     def execute(self, context):
-        obj = context.active_object
         scene = context.scene
+        props = scene.k_volume
+        obj = props.target_object if props.measure_mode == 'SPECIFIC' else context.active_object
         
         # Calculate
         vol_ml = calc_volume_logic(obj, scene)
@@ -74,14 +82,16 @@ class OBJECT_OT_ScaleToTargetVolume(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        obj = context.active_object
         scene = context.scene
+        if not hasattr(scene, "k_volume"): return False
+        props = scene.k_volume
+        obj = props.target_object if props.measure_mode == 'SPECIFIC' else context.active_object
         return obj and obj.type == 'MESH' and scene.k_volume.result > 0.001
 
     def execute(self, context):
-        obj = context.active_object
         scene = context.scene
         props = scene.k_volume
+        obj = props.target_object if props.measure_mode == 'SPECIFIC' else context.active_object
         
         v_current_ml = props.result
         

@@ -8,6 +8,22 @@ class KVolumeProperties(bpy.types.PropertyGroup):
         precision=2
     ) # type: ignore
     
+    measure_mode: bpy.props.EnumProperty(
+        name="Mode",
+        description="Choose how to select the object for volume calculation",
+        items=[
+            ('ACTIVE', 'Active Selected', 'Dynamically calculate volume for the active selection'),
+            ('SPECIFIC', 'Specific Object', 'Lock calculation to a specific object only'),
+        ],
+        default='ACTIVE'
+    ) # type: ignore
+    
+    target_object: bpy.props.PointerProperty(
+        name="Target Object",
+        description="Specific object to measure. If empty, uses active object",
+        type=bpy.types.Object
+    ) # type: ignore
+    
     target_volume: bpy.props.FloatProperty(
         name="Target Volume",
         description="Target volume to match when scaling (in ml)",

@@ -16,7 +16,10 @@ def draw_callback_px():
     context = bpy.context
     scene = context.scene
     props = scene.k_volume
-    obj = context.active_object
+    if hasattr(props, "measure_mode") and props.measure_mode == 'SPECIFIC':
+        obj = props.target_object
+    else:
+        obj = context.active_object
     
     if not props.show_overlay:
         return
@@ -75,7 +78,10 @@ def draw_callback_3d():
     if not props.use_waterline or not props.show_waterline_plane:
         return
         
-    obj = context.active_object
+    if hasattr(props, "measure_mode") and props.measure_mode == 'SPECIFIC':
+        obj = props.target_object
+    else:
+        obj = context.active_object
     if not obj or obj.type != 'MESH':
         return
 
